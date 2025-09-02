@@ -1,0 +1,23 @@
+[project]
+name = "007-picture-convert"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiofiles>=24.1.0",
+    "alembic>=1.16.5",
+    "asyncpg>=0.30.0",
+    "fastapi>=0.116.1",
+    "fastapi-users>=14.0.1",
+    "fastapi-users-db-sqlalchemy>=7.0.0",
+    "orjson>=3.11.3",
+    "pillow>=11.3.0",
+    "postgres[async]>=4.0",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.10.1",
+    "pytest>=8.4.1",
+    "python-dotenv>=1.1.1",
+    "sqlalchemy>=2.0.43",
+    "uvicorn>=0.35.0",
+]
