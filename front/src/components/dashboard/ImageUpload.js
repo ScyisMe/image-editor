@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Image, X, CheckCircle, AlertCircle, FileImage } from 'lucide-react';
+import { Upload, X, CheckCircle, AlertCircle, FileImage } from 'lucide-react';
 import apiService from '../../services/api';
-import { ENDPOINTS } from '../../utils/constants';
+import { ENDPOINTS } from '../../utils/contens';
 
 const ImageUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -76,7 +76,7 @@ const ImageUpload = () => {
 
     try {
       const result = await apiService.uploadFile(ENDPOINTS.IMAGE.UPLOAD, selectedFile);
-      setUploadedImage(result);
+      setUploadedImage({ url: result.url });
       setSelectedFile(null);
       setPreview(null);
       
@@ -245,39 +245,21 @@ const ImageUpload = () => {
             </button>
           </div>
 
-          <div className="space-y-3">
-            <div>
-              <span className="text-sm font-medium text-green-700">Image ID:</span>
-              <p className="text-sm text-green-800 font-mono bg-white px-2 py-1 rounded border inline-block ml-2">
-                {uploadedImage.id}
-              </p>
+          {uploadedImage.url && (
+            <div className="mt-4">
+              <img
+                src={uploadedImage.url}
+                alt="Uploaded"
+                className="max-w-xs rounded-md border shadow-sm"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
             </div>
-            
-            {uploadedImage.filename && (
-              <div>
-                <span className="text-sm font-medium text-green-700">Filename:</span>
-                <p className="text-sm text-green-800">{uploadedImage.filename}</p>
-              </div>
-            )}
-            
-            {uploadedImage.url && (
-              <div className="mt-4">
-                <img
-                  src={uploadedImage.url}
-                  alt="Uploaded"
-                  className="max-w-xs rounded-md border shadow-sm"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              </div>
-            )}
-          </div>
+          )}
 
           <div className="mt-4 pt-4 border-t border-green-200">
-            <p className="text-sm text-green-700">
-              💡 Copy the Image ID above to use it in image operations.
-            </p>
+            <p className="text-sm text-green-700">Image uploaded successfully.</p>
           </div>
         </div>
       )}

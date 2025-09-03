@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/userAuth';
 
 const LoginForm = ({ onSwitchToRegister, onForgotPassword }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login, error, clearError } = useAuth();
+  const { login, error, clearError, user } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

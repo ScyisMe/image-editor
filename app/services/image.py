@@ -10,10 +10,24 @@ async def convert_image(file_bytes: bytes, target_format: str) -> bytes:
         output.seek(0)
         return output.getvalue()
 
-async def resize_image(file_bytes: bytes, target_format: str, width: int = None, height: int = None) -> bytes:
+async def resize_image(file_bytes: bytes, target_format: str, width: int | None = None, height: int | None = None) -> bytes:
     with Image.open(BytesIO(file_bytes)) as img:
-        if width and height:
-            img = img.resize((width, height))
+        new_width: int | None = width if width and width > 0 else None
+        new_height: int | None = height if height and height > 0 else None
+
+        if new_width is not None and new_height is not None:
+            target_size = (new_width, new_height)
+            img = img.resize(target_size, resample=Image.LANCZOS)
+        elif new_width is not None and new_height is None:
+            ratio = new_width / img.width
+            target_size = (new_width, max(1, int(img.height * ratio)))
+            img = img.resize(target_size, resample=Image.LANCZOS)
+        elif new_height is not None and new_width is None:
+            ratio = new_height / img.height
+            target_size = (max(1, int(img.width * ratio)), new_height)
+            img = img.resize(target_size, resample=Image.LANCZOS)
+        # else: keep original size
+
         normalized_format = settings.image.allowed_formats.get(target_format.lower(), target_format.upper())
         output = BytesIO()
         img.save(output, format=normalized_format)

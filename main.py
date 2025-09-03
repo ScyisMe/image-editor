@@ -4,6 +4,7 @@ import logging
 from app.config import settings
 from app.api.v1 import router as api_router
 from create_main_app import create_app
+import app.middlewaries.cors  # ensure CORS middleware is registered
 
 logging.basicConfig(
     level=logging.INFO,

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import apiService from '../services/api';
-import { ENDPOINTS } from '../utils/constants';
+import { ENDPOINTS } from '../utils/contens';
 
 const AuthContext = createContext();
 
@@ -33,16 +33,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (credentials) => {
+    setError(null);
+    setLoading(true);
     try {
-      setError(null);
-      setLoading(true);
-
-      const data = await apiService.loginWithFormData(ENDPOINTS.AUTH.LOGIN, credentials);
-      
-      localStorage.setItem('token', data.access_token);
-      await fetchCurrentUser();
-      
-      return data;
+      const result = await apiService.loginWithFormData(ENDPOINTS.AUTH.LOGIN, credentials);
+      const accessToken = result?.data?.access_token || result?.tokenFromHeader?.replace(/^Bearer\s+/i, '');
+      if (!accessToken) {
+        throw new Error('No access_token in response');
+      }
+      localStorage.setItem('token', accessToken);
+      try {
+        await fetchCurrentUser();
+      } catch (_) {
+        setError('Logged in, but failed to load profile');
+      }
+      return result;
     } catch (error) {
       setError('Invalid email or password');
       throw error;
